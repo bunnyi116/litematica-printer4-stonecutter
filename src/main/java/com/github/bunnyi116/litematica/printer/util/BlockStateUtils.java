@@ -16,7 +16,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.Optional;
 import java.util.function.Predicate;
 
-public class BlockStateUtils {
+public class BlockStateUtils extends BlockUtils {
     public static Comparable<?> getPropertyByName(BlockState state, Predicate<Property<?>> property) {
         for (Property<?> prop : state.getProperties()) {
             if (property.test(prop)) {

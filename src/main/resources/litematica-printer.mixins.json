@@ -1,0 +1,20 @@
+{
+  "required": true,
+  "package": "com.github.bunnyi116.litematica.printer.mixin",
+  "compatibilityLevel": "${java}",
+  "mixins": [
+    "printer.ServerboundMovePlayerPacketMixin",
+    "malilib.ConfigBaseMixin",
+    "malilib.IConfigBaseMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "printer.ClientLevelMixin",
+    "printer.ConnectionMixin",
+    "printer.MinecraftMixin",
+    "printer.MultiPlayerGameModeMixin",
+    "malilib.GuiStringListEditMixin"
+  ]
+}

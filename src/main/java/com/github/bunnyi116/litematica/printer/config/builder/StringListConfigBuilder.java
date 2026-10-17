@@ -1,0 +1,91 @@
+package com.github.bunnyi116.litematica.printer.config.builder;
+
+import com.github.bunnyi116.litematica.printer.I18n;
+import com.google.common.collect.ImmutableList;
+import fi.dy.masa.malilib.config.options.ConfigStringList;
+import net.minecraft.core.Registry;
+//? if >=1.19.3 {
+import net.minecraft.core.registries.BuiltInRegistries;
+//?}
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+public class StringListConfigBuilder extends BaseConfigBuilder<ConfigStringList, StringListConfigBuilder> {
+    //? if >=1.19.3 {
+    private static final Registry<Block> BLOCKS = BuiltInRegistries.BLOCK;
+    private static final Registry<Item> ITEMS = BuiltInRegistries.ITEM;
+    //?} else {
+    /*private static final Registry<Block> BLOCKS = Registry.BLOCK;
+    private static final Registry<Item> ITEMS = Registry.ITEM;
+    *///?}
+
+    private ImmutableList<String> defaultValue = ImmutableList.of();
+
+    public StringListConfigBuilder(I18n i18n) {
+        super(i18n);
+    }
+
+    public StringListConfigBuilder(String translateKey) {
+        this(I18n.of(translateKey));
+    }
+
+    public StringListConfigBuilder defaultValue(ImmutableList<String> value) {
+        this.defaultValue = value;
+        return this;
+    }
+
+    public StringListConfigBuilder defaultValue(List<?> value) {
+        this.defaultValue = convertToImmutableStringList(value.stream());
+        return this;
+    }
+
+    public StringListConfigBuilder defaultValue(Stream<?> value) {
+        this.defaultValue = convertToImmutableStringList(value);
+        return this;
+    }
+
+    public StringListConfigBuilder defaultValue(Object... value) {
+        this.defaultValue = convertToImmutableStringList(Stream.of(value));
+        return this;
+    }
+
+    private ImmutableList<String> convertToImmutableStringList(Stream<?> stream) {
+        return stream
+                .map(this::convertObjectToString)
+                .filter(s -> s != null && !s.isEmpty()) // 过滤空值
+                .collect(ImmutableList.toImmutableList());
+    }
+
+    @SuppressWarnings("all")
+    private String convertObjectToString(Object obj) {
+        if (obj == null) {
+            return "";
+        }
+        if (obj instanceof BlockState blockState) {
+            return BLOCKS.getKey(blockState.getBlock()).toString();
+        }
+        if (obj instanceof Block block) {
+            return BLOCKS.getKey(block).toString();
+        }
+        if (obj instanceof ItemStack itemStack) {
+            return ITEMS.getKey(itemStack.getItem()).toString();
+        }
+        if (obj instanceof ItemLike itemLike) {
+            Item item = itemLike.asItem();
+            return ITEMS.getKey(item).toString();
+        }
+        return obj.toString();
+    }
+
+    @Override
+    public ConfigStringList build() {
+        ConfigStringList config = new ConfigStringList(i18n.getNameKey(), defaultValue, descKey);
+        return buildExtension(config);
+    }
+}
